@@ -5,87 +5,89 @@ import yaml
 from PIL import Image
 from resizeimage import resizeimage
 
-def get_header():
-    with open('header.txt') as h:
-        return h.read()
+def get_static_html(filename):
+    with open(filename) as f:
+        return f.read()
 
-def get_footer():
-    with open('footer.txt') as foot:
-        return foot.read()
-
-def is_gif(img):
-    img.split(".")[1] == "gif"
-
-
-HEADER = get_header()
-FOOTER = get_footer()
+HEADER = get_static_html('templates/header.txt')
+FOOTER = get_static_html('templates/footer.txt')
 
 def page_name(image_path):
-    return image_path.split(".")[0] + ".html"
+    return image_path.split('.')[0] + '.html'
 
-def generate_page(image_path, desc):
-    contents = ""
-    with open('page.txt') as f:
+def generate_page(image_path, desc, **kwargs):
+    contents = ''
+    with open('templates/page.txt') as f:
         contents = f.read().format(image=image_path, desc=desc)
 
-    with open("site/" + page_name(image_path), 'w') as entry:
+    page_path = kwargs['output_dir'] + '/' + page_name(image_path)
+
+    with open(page_path, 'w+') as entry:
         entry.write(HEADER)
         entry.write(contents)
         entry.write(FOOTER)
 
-def standardize_images(images):
+    with open(page_path, 'r') as contents:
+        return contents.read()
+
+def standardize_images(images, **kwargs):
     for img in images:
-        if "-mov" in img:
-            next
-        filepath = "site/images/%s" % img
-        with open("images/%s" % img, 'r+b') as f:
+        input_img = kwargs['input_dir'] + '/' + img
+        output_img = kwargs['output_dir'] + '/images/%s' % img
+        with open(input_img, 'r+b') as f:
             try:
                 with Image.open(f) as image:
+                    print('standardizing %s' % img)
                     banner = resizeimage.resize_height(image, 800)
-                    banner.save(filepath, image.format)
+                    banner.save(output_img, image.format)
             except Exception as e:
-                shutil.copyfile("images/%s" % img, filepath)
+                shutil.copyfile(input_img, output_img)
 
-def generate_thumbnails(images):
+def generate_thumbnails(images, **kwargs):
     for img in images:
-        filepath = "site/images/%s" % img
-        with open(filepath, 'r+b') as f:
+        input_img = kwargs['input_dir'] + '/' + img
+        thumbnail = kwargs['output_dir'] + '/' + 'images/thumbnails/' + img
+        with open(input_img, 'r+b') as f:
             with Image.open(f) as image:
-                thumb = resizeimage.resize_width(image, 300)
-                thumb.save('site/images/thumbnails/%s' % img, image.format)
+                print('generating thumbnail for %s' % img)
+                thumb = resizeimage.resize_height(image, 300)
+                thumb.save(thumbnail, image.format)
 
-def generate_index_entry(image_path):
-    return "<a href='%s'><img src='images/thumbnails/%s' width='300px'/></a>" % (page_name(image_path), image_path)
+def thumbnail_link_html(image_path):
+    return "<a href='%s'><img src='images/thumbnails/%s' height='300px'/></a>" % (page_name(image_path), image_path)
 
-def generate_index_entries(images):
-    toc = ''.join(map((lambda x: generate_index_entry(x)), images))
+def generate_homepage(images,  **kwargs):
+    toc = ''.join(map((lambda x: thumbnail_link_html(x)), images))
+    index = kwargs['output_dir'] + '/index.html'
 
-    with open("site/index.html", 'w') as p:
+    with open(index, 'w') as p:
         p.write(HEADER)
         p.write(toc)
         p.write(FOOTER)
 
-def manage_alts_db(images):
-    alts = {}
-    with open('site/meta/alts.yml') as f:
-        alts = yaml.load(f)
+    with open(index, 'r') as contents:
+        return contents.read()
+
+def manage_descriptions_db(images, ymlpath='static/descriptions.yml', **kwargs):
+    descriptions = {}
+
+    with open(ymlpath, 'r') as f:
+        descriptions = yaml.load(f)
 
     for img in images:
         try:
-            alts[img]
+            descriptions[img]
         except KeyError:
-            alts[img] = ''
+            descriptions[img] = img.split('.')[0]
 
-    with open('site/meta/alts.yml', 'w') as outfile:
-        yaml.dump(alts, outfile, default_flow_style=False)
+    with open(ymlpath, 'w') as outfile:
+        yaml.dump(descriptions, outfile, default_flow_style=False)
 
-    return alts
+    return descriptions
 
-def generate_site(images_dir):
-    images = os.listdir(images_dir)
-    standardize_images(images)
-    generate_thumbnails(images)
-    generate_index_entries(images)
-    alt_texts = manage_alts_db(images)
-    for entry in images:
-        generate_page(entry, alt_texts[entry])
+def setup_site_dirs(output_dir):
+    output_images_dir = output_dir + '/images'
+    if os.path.isdir(output_images_dir):
+        shutil.rmtree(output_images_dir)
+    os.makedirs(output_images_dir)
+    os.makedirs(output_images_dir + '/thumbnails')

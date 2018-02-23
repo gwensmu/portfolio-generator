@@ -1,0 +1,16 @@
+<html>
+<head>
+<title>Gwen is Weaving</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<a href="index.html"><h1>gwen is weaving</h1></a>
+
+<div class="header">
+  <ul>
+    <li><a href="https://www.instagram.com/gwenisweaving/">instagram</a></li>
+    <li><a href="http://gwensmudaweaving.bigcartel.com/">samples shop</a></li>
+  <ul>
+</div>

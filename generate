@@ -1,4 +1,22 @@
 #! /usr/bin/env python
 
-import generate
-generate.generate_site('images')
+import argparse
+import generate as gen
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--input', default='images', help='Input directory of images')
+parser.add_argument('--output', default='site', help='Name of directory to generate site in')
+args = parser.parse_args()
+
+def generate_site(**kwargs):
+    gen.setup_site_dirs(kwargs['output_dir'])
+    gen.shutil.copy('static/styles.css', kwargs['output_dir'])
+    gen.images = os.listdir(kwargs['input_dir'])
+    gen.alt_texts = manage_descriptions_db(images, **kwargs)
+    gen.standardize_images(images, **kwargs)
+    gen.generate_thumbnails(images, **kwargs)
+    gen.generate_homepage(images,  **kwargs)
+    for entry in images:
+        gen.generate_page(entry, alt_texts[entry], **kwargs)
+
+generate_site(**{'input_dir': args.input, 'output_dir': args.output})

@@ -1,0 +1,9 @@
+<div class="footer">
+  <ul>
+    <li>"handweaver and textile generalist"</li>
+    <li><a href="mailto:gwen.smuda@gmail.com">gwen.smuda@gmail.com</a></li>
+  <ul>
+</div>
+
+</body>
+</html>

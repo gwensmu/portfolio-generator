@@ -1,0 +1,2 @@
+<p class="desc">{desc}<p>
+<img class="banner" src="images/{image}" />
