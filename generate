@@ -2,6 +2,8 @@
 
 import argparse
 import generate as gen
+import os
+import shutil
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', default='images', help='Input directory of images')
@@ -10,9 +12,9 @@ args = parser.parse_args()
 
 def generate_site(**kwargs):
     gen.setup_site_dirs(kwargs['output_dir'])
-    gen.shutil.copy('static/styles.css', kwargs['output_dir'])
-    gen.images = os.listdir(kwargs['input_dir'])
-    gen.alt_texts = manage_descriptions_db(images, **kwargs)
+    shutil.copy('static/styles.css', kwargs['output_dir'])
+    images = os.listdir(kwargs['input_dir'])
+    alt_texts = gen.manage_descriptions_db(images, **kwargs)
     gen.standardize_images(images, **kwargs)
     gen.generate_thumbnails(images, **kwargs)
     gen.generate_homepage(images,  **kwargs)
