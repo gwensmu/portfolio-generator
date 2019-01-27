@@ -41,6 +41,7 @@ def standardize_images(images, **kwargs):
                     banner = resizeimage.resize_height(image, 800)
                     banner.save(output_img, image.format)
             except Exception as e:
+                print(e)
                 shutil.copyfile(input_img, output_img)
 
 def generate_thumbnails(images, **kwargs):

@@ -13,7 +13,10 @@ args = parser.parse_args()
 def generate_site(**kwargs):
     gen.setup_site_dirs(kwargs['output_dir'])
     shutil.copy('static/styles.css', kwargs['output_dir'])
+
     images = os.listdir(kwargs['input_dir'])
+    images = list(filter(lambda f: f.endswith(".jpg") or f.endswith(".png") or f.endswith(".gif"), images))
+
     alt_texts = gen.manage_descriptions_db(images, **kwargs)
     gen.standardize_images(images, **kwargs)
     gen.generate_thumbnails(images, **kwargs)
