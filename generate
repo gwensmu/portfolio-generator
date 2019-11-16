@@ -5,6 +5,8 @@ import generate as gen
 import os
 import shutil
 
+from os import walk
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', default='images', help='Input directory of images')
 parser.add_argument('--output', default='site', help='Name of directory to generate site in')
@@ -14,8 +16,9 @@ def generate_site(**kwargs):
     gen.setup_site_dirs(kwargs['output_dir'])
     shutil.copy('static/styles.css', kwargs['output_dir'])
 
-    images = os.listdir(kwargs['input_dir'])
-    images = list(filter(lambda f: f.endswith(".jpg") or f.endswith(".png") or f.endswith(".gif"), images))
+    images = []
+    for (dirpath, dirnames, filenames) in walk(kwargs['input_dir']):
+        images.extend(list(filter(lambda f: f.endswith(".jpg") or f.endswith(".png") or f.endswith(".gif"), filenames)))
 
     alt_texts = gen.manage_descriptions_db(images, **kwargs)
     gen.standardize_images(images, **kwargs)

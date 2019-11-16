@@ -63,12 +63,15 @@ def generate_homepage(images,  **kwargs):
 
     with open(index, 'w') as p:
         p.write(HEADER)
+        p.write("<div class='main'>")
         p.write(toc)
+        p.write("</div>")
         p.write(FOOTER)
 
     with open(index, 'r') as contents:
         return contents.read()
 
+# put this in a sqlite db or a docdb
 def manage_descriptions_db(images, ymlpath='static/descriptions.yml', **kwargs):
     descriptions = {}
 

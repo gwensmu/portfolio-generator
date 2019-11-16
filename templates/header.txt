@@ -1,16 +1,15 @@
 <html>
 <head>
-<title>Gwen is Weaving</title>
+<title>gwen smuda is a handweaver</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<a href="index.html"><h1>gwen is weaving</h1></a>
-
 <div class="header">
-  <ul>
-    <li><a href="https://www.instagram.com/gwenisweaving/">instagram</a></li>
-    <li><a href="https://www.etsy.com/shop/smudacloth">etsy shop</a></li>
+  <a href="index.html"><h1>gwen is weaving</h1></a>
+    <ul>
+    <li>email for commissions</li>
+    <li><a href="mailto:gwen.smuda@gmail.com">gwen.smuda@gmail.com</a></li>
   <ul>
 </div>

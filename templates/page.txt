@@ -1,2 +1,4 @@
-<p class="desc">{desc}<p>
-<img class="banner" src="images/{image}" />
+<div class="main">
+  <p class="desc">{desc}<p>
+  <img class="banner" src="images/{image}" />
+</div>
